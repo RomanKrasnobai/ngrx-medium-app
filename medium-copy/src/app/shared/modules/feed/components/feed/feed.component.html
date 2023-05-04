@@ -1,0 +1,49 @@
+<app-loading *ngIf="isLoading$ | async"></app-loading>
+
+<app-error-message *ngIf="error$ | async"
+                   [errorMessage]="error$ | async"
+></app-error-message>
+
+<ng-container *ngIf="!(feed$ | async)?.articles.length && !(isLoading$ | async)">
+  <p>No available feeds</p>
+</ng-container>
+
+<ng-container *ngIf="(feed$ | async)">
+  <div class="article-preview" *ngFor="let article of (feed$ | async)?.articles">
+    <div class="article-meta">
+      <a [routerLink]="['/profiles', article.author.username]">
+        <img [src]="article.author.image">
+      </a>
+
+      <div class="info">
+        <a [routerLink]="['/profiles', article.author.username]">
+          {{ article.author.username }}
+        </a>
+
+        <span class="date">{{ article.createdAt }}</span>
+      </div>
+
+      <div class="pull-xs-right">
+        <app-add-to-favourites [articleSlug]="article.slug"
+                               [isFavourite]="article.favorited"
+                               [favouritesCount]="article.favoritesCount"
+        ></app-add-to-favourites>
+      </div>
+    </div>
+
+    <a [routerLink]="['/articles', article.slug]" class="preview-link">
+      <h1>{{ article.title }}</h1>
+      <p>{{ article.description }}</p>
+
+      <app-tag-list [tags]="article.tagList"></app-tag-list>
+    </a>
+  </div>
+
+  <app-pagination *ngIf="(feed$ | async)"
+                  [total]="(feed$ | async).articlesCount"
+                  [currentPage]="currentPage"
+                  [limit]="limit"
+                  [url]="baseUrl"
+  ></app-pagination>
+</ng-container>
+

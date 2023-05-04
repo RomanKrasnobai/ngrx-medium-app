@@ -1,0 +1,8 @@
+<app-loading *ngIf="isLoading$ | async"></app-loading>
+
+<app-article-form *ngIf="initialValues$ | async"
+                  [initValues]="initialValues$ | async"
+                  [errors]="errors$ | async"
+                  [isSubmitting]="isSubmitting$ | async"
+                  (articleSubmit)="onSubmit($event)"
+></app-article-form>
